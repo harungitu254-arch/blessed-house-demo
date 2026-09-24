@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F5F5B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="Blessed House Digital Care — a concept demonstration of digitised adult family home documentation. All resident information shown is fictional demo data.">
+<title>Blessed House Digital Care</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Cpath d='M8 16 L16 9 L24 16 V24 H19 V19 H13 V24 H8 Z' fill='none' stroke='%23FAF9F7' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#FAF9F7;--surface:#fff;--text:#1F2A2E;--muted:#5A6A70;--soft:#8A969B;--border:#E6E2DC;--border2:#D0CBC3;--accent:#1F5F5B;--accent-soft:#E8F2F1;--accent-h:#174A47;--warn:#B45309;--warn-bg:#FEF3C7;--danger:#B91C1C;--danger-bg:#FEE2E2;--ok:#047857;--ok-bg:#D1FAE5;--info:#1D4ED8;--info-bg:#DBEAFE;--r:8px;--rs:6px;--shadow:0 1px 2px rgba(31,42,46,.06);--shadow-md:0 4px 12px rgba(31,42,46,.08);--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;--nav-h:56px;--safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);--side:220px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.45;min-height:100%;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer;border:none;background:none}
+a{color:var(--accent);text-decoration:none}svg{display:block;max-width:100%}
+h1{font-size:1.05rem;font-weight:600}h2{font-size:.95rem;font-weight:600}h3{font-size:.9rem;font-weight:600}
+.app{display:flex;min-height:100vh;min-height:100dvh}
+.sidebar{display:none;width:var(--side);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:16px 12px;flex-direction:column;position:sticky;top:0;height:100vh;height:100dvh;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:10px;padding:8px 10px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.brand svg{width:32px;height:32px}.brand-name{font-weight:650;font-size:.9rem}.brand-sub{font-size:.7rem;color:var(--muted)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rs);color:var(--muted);font-size:.875rem;font-weight:500;min-height:40px;width:100%;text-align:left}
+.nav-item:hover{background:var(--bg);color:var(--text)}.nav-item.active{background:var(--accent-soft);color:var(--accent)}
+.nav-item svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--danger);color:#fff;font-size:.65rem;font-weight:600;padding:1px 6px;border-radius:10px}
+.side-foot{margin-top:auto;padding:12px 8px 4px;border-top:1px solid var(--border);font-size:.7rem;color:var(--soft);line-height:1.4}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;padding-bottom:calc(var(--nav-h) + var(--safe-b) + 8px)}
+.topbar{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;padding-top:calc(8px + var(--safe-t));display:flex;align-items:center;gap:12px;min-height:52px}
+.topbar-title{flex:1;min-width:0}.topbar-title h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.subtitle{font-size:.75rem;color:var(--muted);margin-top:1px}
+.user-sw{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:4px 8px 4px 4px;min-height:40px;font-size:.8rem}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:600;flex-shrink:0}
+.user-sw select{border:none;background:transparent;font-size:.8rem;font-weight:500;outline:none;max-width:90px;min-height:32px}
+.content{flex:1;padding:16px;max-width:1100px;width:100%;margin:0 auto}
+.page-foot{padding:16px 16px calc(8px + var(--safe-b));font-size:.7rem;color:var(--soft);line-height:1.45;text-align:center;max-width:1100px;margin:0 auto}
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--surface);border-top:1px solid var(--border);display:flex;padding-bottom:var(--safe-b);height:calc(var(--nav-h) + var(--safe-b))}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--muted);font-size:.65rem;font-weight:500;min-height:44px;padding:6px 2px}
+.bnav-item.active{color:var(--accent)}.bnav-item svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.card-pad{padding:14px}.card-click{cursor:pointer;transition:border-color .15s,box-shadow .15s;text-align:left;width:100%;display:block;color:inherit}
+.card-click:hover{border-color:var(--border2);box-shadow:var(--shadow-md)}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{padding:12px;display:flex;flex-direction:column;gap:4px;min-height:72px}
+.tile-l{font-size:.72rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.03em}
+.tile-v{font-size:1.35rem;font-weight:650;line-height:1.1}.tile-h{font-size:.72rem;color:var(--soft)}
+.tile.warn .tile-v{color:var(--warn)}.tile.danger .tile-v{color:var(--danger)}.tile.ok .tile-v{color:var(--ok)}.tile.accent .tile-v{color:var(--accent)}
+.sec{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px}.sec .count{font-size:.75rem;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border-radius:var(--rs);font-size:.875rem;font-weight:550;border:1px solid transparent;min-height:40px;white-space:nowrap}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:var(--accent-h)}
+.btn-s{background:var(--surface);border-color:var(--border2);color:var(--text)}.btn-s:hover{background:var(--bg)}
+.btn-g{color:var(--muted)}.btn-g:hover{background:var(--bg);color:var(--text)}
+.btn-d{background:var(--danger-bg);color:var(--danger)}.btn-sm{padding:6px 10px;font-size:.8rem;min-height:36px}.btn-block{width:100%}
+.btn-icon{width:40px;height:40px;padding:0;border-radius:var(--rs);display:inline-flex;align-items:center;justify-content:center;color:var(--muted)}
+.btn-icon:hover{background:var(--bg)}.btn-icon svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.fg{margin-bottom:14px}.fl{display:block;font-size:.8rem;font-weight:550;margin-bottom:5px}.fl .req{color:var(--danger)}
+.ferr{font-size:.75rem;color:var(--danger);margin-top:4px}
+.fc,.fs,.ft{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:var(--rs);background:var(--surface);font-size:16px;min-height:42px;outline:none}
+.fc:focus,.fs:focus,.ft:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.ft{min-height:88px;resize:vertical}.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fcheck{display:flex;align-items:center;gap:8px;min-height:40px;font-size:.875rem}.fcheck input{width:18px;height:18px;accent-color:var(--accent)}
+.seg{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;flex-wrap:wrap}
+.seg button{flex:1;padding:8px 6px;font-size:.8rem;font-weight:500;color:var(--muted);min-height:40px;border-right:1px solid var(--border)}
+.seg button:last-child{border-right:none}.seg button.active{background:var(--accent);color:#fff}.seg button:hover:not(.active){background:var(--surface);color:var(--text)}
+.seg .sc{font-size:.65rem;opacity:.85;margin-left:3px}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:.7rem;font-weight:550;white-space:nowrap}
+.b-stable,.b-closed,.b-current,.b-completed{background:var(--ok-bg);color:var(--ok)}
+.b-observe,.b-pending,.b-review{background:var(--warn-bg);color:var(--warn)}
+.b-followup,.b-under,.b-scheduled{background:var(--info-bg);color:var(--info)}
+.b-action,.b-expired,.b-danger{background:var(--danger-bg);color:var(--danger)}
+.b-routine,.b-draft,.b-cancelled{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+.b-review-due{background:#FCE7F3;color:#9D174D}
+.list{display:flex;flex-direction:column;gap:8px}
+.li{display:flex;align-items:flex-start;gap:12px;padding:12px;text-align:left;width:100%}
+.li-ic{width:36px;height:36px;border-radius:var(--rs);background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.li-ic svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.li-bd{flex:1;min-width:0}.li-t{font-weight:550;font-size:.875rem}.li-m{font-size:.75rem;color:var(--muted);margin-top:2px}.li-r{flex-shrink:0}
+.empty{text-align:center;padding:32px 16px;color:var(--muted);font-size:.875rem}
+.search{display:flex;gap:8px;margin-bottom:12px}.search .fc{flex:1}
+.rcard{display:flex;align-items:center;gap:12px;padding:12px}
+.rav{width:42px;height:42px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:650;font-size:.85rem;flex-shrink:0}
+.ri{flex:1;min-width:0}.ri .name{font-weight:600;font-size:.9rem}.ri .meta{font-size:.75rem;color:var(--muted);margin-top:2px}.ri .alerts{margin-top:4px;display:flex;flex-wrap:wrap;gap:4px}
+.rhead{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.rh-top{display:flex;gap:12px;margin-bottom:12px}
+.rh-av{width:48px;height:48px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:650;font-size:1rem;flex-shrink:0}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.8rem}.flab{color:var(--muted);font-size:.7rem}.fval{font-weight:500;margin-top:1px}
+.ractions{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.tabs-sc{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -16px 12px;padding:0 16px;scrollbar-width:none}
+.tabs-sc::-webkit-scrollbar{display:none}.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);min-width:max-content}
+.tab{padding:10px 12px;font-size:.8rem;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;min-height:40px}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.prog{height:8px;background:var(--bg);border-radius:4px;overflow:hidden}.prog-b{height:100%;background:var(--accent);border-radius:4px}
+.overlay{position:fixed;inset:0;background:rgba(31,42,46,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+.overlay.open{opacity:1;visibility:visible}
+.sheet{background:var(--surface);border-radius:12px 12px 0 0;width:100%;max-width:560px;max-height:min(92vh,92dvh);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s ease;padding-bottom:var(--safe-b)}
+.overlay.open .sheet{transform:translateY(0)}
+.sh{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}.sh h2{flex:1;font-size:1rem}
+.sb{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
+.sf{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}.sf .btn{flex:1;min-width:110px}
+.toast-w{position:fixed;top:calc(12px + var(--safe-t));left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;width:calc(100% - 32px);max-width:400px;pointer-events:none}
+.toast{background:var(--text);color:#fff;padding:12px 16px;border-radius:var(--r);font-size:.85rem;box-shadow:var(--shadow-md);pointer-events:auto}
+.toast.ok{background:var(--ok)}.toast.warn{background:var(--warn)}
+.confirm{background:var(--ok-bg);border:1px solid #A7F3D0;border-radius:var(--r);padding:14px;margin-top:12px}
+.confirm h3{color:var(--ok);margin-bottom:6px}.confirm p{font-size:.85rem;margin-bottom:10px}.confirm .links{display:flex;flex-wrap:wrap;gap:8px}
+.drow{display:flex;gap:8px;font-size:.85rem;padding:6px 0;border-bottom:1px solid var(--border)}.drow:last-child{border-bottom:none}
+.dl{width:110px;flex-shrink:0;color:var(--muted);font-size:.8rem}.dv{flex:1;font-weight:500;word-break:break-word}
+.note{padding:12px;border-left:3px solid var(--accent)}.note-m{display:flex;flex-wrap:wrap;gap:8px;font-size:.72rem;color:var(--muted);margin-bottom:6px}
+.note-b{font-size:.85rem;white-space:pre-wrap}.note-f{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin-top:8px;font-size:.78rem}.nfl{color:var(--muted)}
+.audit{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:.8rem}.audit:last-child{border-bottom:none}
+.adot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:5px;flex-shrink:0}.atime{color:var(--soft);font-size:.72rem;margin-top:2px}
+.pbar{width:4px;align-self:stretch;border-radius:2px;flex-shrink:0}.pbar.routine{background:var(--border2)}.pbar.observe{background:var(--warn)}.pbar.action{background:var(--danger)}
+.docph{background:var(--bg);border:1px dashed var(--border2);border-radius:var(--rs);padding:20px;font-size:.85rem;color:var(--muted);line-height:1.5;margin-top:12px}
+.more-m{display:flex;flex-direction:column;gap:2px}
+.more-m button{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--rs);color:var(--text);font-size:.9rem;font-weight:500;min-height:44px;text-align:left;width:100%}
+.more-m button:hover{background:var(--bg)}.more-m svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.hidden{display:none!important}.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}
+.gap-2{gap:8px}.flex{display:flex}.flex-wrap{flex-wrap:wrap}.items-c{align-items:center}.just-b{justify-content:space-between}
+.muted{color:var(--muted)}.sm{font-size:.8rem}.fw{font-weight:600}
+@media(min-width:768px){
+.sidebar{display:flex}.bnav{display:none}.main{padding-bottom:0}.page-foot{padding-bottom:24px}
+.tiles{grid-template-columns:repeat(4,1fr)}.facts{grid-template-columns:repeat(4,1fr)}
+.overlay{align-items:center;padding:24px}
+.sheet{border-radius:var(--r);max-height:90vh;transform:translateY(12px) scale(.98);opacity:0}
+.overlay.open .sheet{transform:translateY(0) scale(1);opacity:1}
+.content{padding:24px}.d2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+}
+
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+    <main class="content" id="content"></main>
+    <footer class="page-foot" id="page-footer">
+      Concept demonstration — all resident information shown is fictional. A production implementation would require appropriate privacy, security, access-control, audit, backup and regulatory configuration.
+    </footer>
+  </div>
+  <nav class="bnav" id="bottom-nav"></nav>
+</div>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <div class="sheet" id="sheet">
+    <div class="sh">
+      <h2 id="sheet-title">Dialog</h2>
+      <button class="btn-icon" id="sheet-close" aria-label="Close" type="button">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sb" id="sheet-body"></div>
+    <div class="sf" id="sheet-footer"></div>
+  </div>
+</div>
+<div class="toast-w" id="toast-wrap"></div>
+<script>
+(function(){
+'use strict';
+const I={
+home:'<svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1h-5v-7H9v7H4a1 1 0 01-1-1v-10.5z"/></svg>',
+users:'<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
+clipboard:'<svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg>',
+calendar:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
+handover:'<svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>',
+alert:'<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>',
+settings:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>',
+more:'<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>',
+plus:'<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+check:'<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>',
+x:'<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+chevron:'<svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>',
+file:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>',
+clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+};
+const STAFF=[{id:'ann',name:'Ann',role:'Administrator/Manager',initials:'AN'},{id:'harun',name:'Harun',role:'Caregiver',initials:'HA'},{id:'loice',name:'Loice',role:'Caregiver',initials:'LO'}];
+const SHIFTS=['Morning','Evening','Night'];
+const KEY='bhdc_demo_v1';
+function uid(){return 'id_'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4)}
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function addDaysISO(n){const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function fmtDate(iso){if(!iso)return'';const[y,m,dd]=iso.split('-').map(Number);return new Date(y,m-1,dd).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'})}
+function fmtShort(iso){if(!iso)return'';const[y,m,dd]=iso.split('-').map(Number);return new Date(y,m-1,dd).toLocaleDateString('en-US',{month:'short',day:'numeric'})}
+function fmtTime(ts){return new Date(ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
+function fmtTO(t){if(!t)return'';const[h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';return (h%12||12)+':'+String(m).padStart(2,'0')+' '+ap}
+function sn(id){const s=STAFF.find(x=>x.id===id);return s?s.name:id}
+function esc(s){return s==null?'':String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function badge(st){
+  const map={'Stable':'stable','Observe':'observe','Follow-up':'followup','Review due':'review-due','Pending Review':'pending','Under Review':'under','Closed':'closed','Routine':'routine','Action Required':'action','Current':'current','Expired':'expired','Draft':'draft','Scheduled':'scheduled','Completed':'completed','Cancelled':'cancelled'};
+  return '<span class="badge b-'+(map[st]||'routine')+'">'+esc(st)+'</span>';
+}
+function buildSeed(){
+  const today=todayISO(),yesterday=addDaysISO(-1),tomorrow=addDaysISO(1),nextWeek=addDaysISO(7),lastWeek=addDaysISO(-7),twoWeeks=addDaysISO(-14);
+  const residents=[
+    {id:'A',label:'Resident A',room:'Room 1',status:'Stable',diet:'Regular / soft preference',mobility:'Independent with walker',allergies:'None known (demo)',carePlanStatus:'Current',alerts:[],overview:'Demo resident receiving routine support. Contact: Family Contact (demo) · 555-0101. Provider: Demo Family Clinic.'},
+    {id:'B',label:'Resident B',room:'Room 2',status:'Follow-up',diet:'Low sodium (demo)',mobility:'One-person assist',allergies:'Penicillin (demo)',carePlanStatus:'Current',alerts:['Evening documentation due','Follow-up required'],overview:'Demo resident with observation for fluid intake. Contact: Family Contact (demo) · 555-0102. Provider: Demo Family Clinic.'},
+    {id:'C',label:'Resident C',room:'Room 3',status:'Observe',diet:'Diabetic-friendly (demo)',mobility:'Wheelchair / transfer assist',allergies:'Shellfish (demo)',carePlanStatus:'Review due',alerts:['Appointment tomorrow','Care-plan review approaching'],overview:'Demo resident with scheduled clinic follow-up. Contact: Family Contact (demo) · 555-0103. Provider: Demo Family Clinic.'},
+    {id:'D',label:'Resident D',room:'Room 4',status:'Review due',diet:'Pureed / thickened fluids (demo)',mobility:'Two-person assist',allergies:'Latex (demo)',carePlanStatus:'Review due',alerts:['Care-plan review approaching'],overview:'Demo resident approaching care plan review. Contact: Family Contact (demo) · 555-0104. Provider: Demo Specialty Clinic.'},
+  ];
+  const careNotes=[
+    {id:uid(),residentId:'A',caregiverId:'harun',shift:'Morning',date:today,meals:'Breakfast 100%, Lunch 75%',fluid:'Adequate (1200 mL)',toileting:'Independent with cueing',bathing:'Assisted shower',mobility:'Walker, steady gait',activities:'Morning stretch',mood:'Pleasant, engaged',sleep:'N/A',changesBaseline:'No',changesDetail:'',followUpRequired:false,followUpDetail:'',followUpDue:'',followUpResolved:false,narrative:'Resident A completed morning routine without difficulty.',createdAt:new Date().setHours(8,15,0,0),authorId:'harun'},
+    {id:uid(),residentId:'A',caregiverId:'loice',shift:'Evening',date:today,meals:'Dinner 100%',fluid:'Adequate (800 mL)',toileting:'Assisted',bathing:'PM hygiene completed',mobility:'Walker to dining',activities:'Board games',mood:'Calm',sleep:'Settling at 20:30',changesBaseline:'No',changesDetail:'',followUpRequired:false,followUpDetail:'',followUpDue:'',followUpResolved:false,narrative:'Quiet evening. Resident A socialised in common area.',createdAt:new Date().setHours(18,40,0,0),authorId:'loice'},
+    {id:uid(),residentId:'B',caregiverId:'harun',shift:'Morning',date:today,meals:'Breakfast 50%, Lunch 75%',fluid:'Reduced (600 mL)',toileting:'Assisted',bathing:'Bed bath',mobility:'One-person assist',activities:'Rest periods',mood:'Quiet, cooperative',sleep:'N/A',changesBaseline:'Yes',changesDetail:'Reduced fluid intake noted (demo).',followUpRequired:true,followUpDetail:'Encourage fluids; recheck this evening (demo).',followUpDue:today,followUpResolved:false,narrative:'Resident B ate half of breakfast. Encouraged fluids.',createdAt:new Date().setHours(9,5,0,0),authorId:'harun'},
+    {id:uid(),residentId:'C',caregiverId:'loice',shift:'Morning',date:today,meals:'Breakfast 100%, Lunch 100%',fluid:'Adequate (1100 mL)',toileting:'Assisted',bathing:'Shower with assist',mobility:'Wheelchair transfers OK',activities:'Music therapy',mood:'Cheerful',sleep:'N/A',changesBaseline:'No',changesDetail:'',followUpRequired:false,followUpDetail:'',followUpDue:'',followUpResolved:false,narrative:'Good morning. Looking forward to tomorrow clinic visit (demo).',createdAt:new Date().setHours(8,45,0,0),authorId:'loice'},
+    {id:uid(),residentId:'D',caregiverId:'harun',shift:'Morning',date:today,meals:'Breakfast 100% (pureed)',fluid:'Thickened fluids adequate',toileting:'Two-person assist',bathing:'Sponge bath',mobility:'Two-person transfer',activities:'Sensory activity',mood:'Calm',sleep:'N/A',changesBaseline:'No',changesDetail:'',followUpRequired:false,followUpDetail:'',followUpDue:'',followUpResolved:false,narrative:'Morning care completed. Skin check clear (demo).',createdAt:new Date().setHours(7,50,0,0),authorId:'harun'},
+    {id:uid(),residentId:'A',caregiverId:'loice',shift:'Night',date:yesterday,meals:'Snack offered',fluid:'Adequate',toileting:'Assisted x2',bathing:'N/A',mobility:'Bed to chair',activities:'Rest',mood:'Settled',sleep:'Slept 22:00–06:00 with one wake',changesBaseline:'No',changesDetail:'',followUpRequired:false,followUpDetail:'',followUpDue:'',followUpResolved:false,narrative:'Uneventful night (demo).',createdAt:Date.now()-86400000,authorId:'loice'},
+  ];
+  const appointments=[
+    {id:uid(),residentId:'A',date:today,time:'14:00',type:'Primary care check-in (demo)',provider:'Demo Family Clinic',location:'Demo Family Clinic — Suite 100',transport:false,escort:'Harun',notes:'Routine quarterly check (demo).',status:'Scheduled',createdAt:Date.now()-86400000*3,authorId:'ann'},
+    {id:uid(),residentId:'C',date:tomorrow,time:'10:30',type:'Specialty follow-up (demo)',provider:'Demo Specialty Clinic',location:'Demo Specialty Clinic — Building B',transport:true,escort:'Loice',notes:'Bring medication list (demo).',status:'Scheduled',createdAt:Date.now()-86400000*5,authorId:'ann'},
+    {id:uid(),residentId:'B',date:nextWeek,time:'09:00',type:'Dental cleaning (demo)',provider:'Demo Dental Group',location:'Demo Dental Group',transport:true,escort:'Harun',notes:'',status:'Scheduled',createdAt:Date.now()-86400000*2,authorId:'harun'},
+    {id:uid(),residentId:'D',date:lastWeek,time:'11:00',type:'Therapy session (demo)',provider:'Demo Therapy Services',location:'On-site therapy room',transport:false,escort:'Loice',notes:'Completed as scheduled.',status:'Completed',createdAt:Date.now()-86400000*10,authorId:'loice'},
+    {id:uid(),residentId:'A',date:twoWeeks,time:'15:30',type:'Lab draw (demo)',provider:'Demo Lab Services',location:'Demo Family Clinic',transport:false,escort:'Harun',notes:'Cancelled at request.',status:'Cancelled',createdAt:Date.now()-86400000*16,authorId:'ann'},
+  ];
+  const handovers=[
+    {id:uid(),residentId:'B',priority:'Observe',message:'Encourage fluids this evening — intake reduced this morning (demo).',authorId:'harun',createdAt:new Date().setHours(9,20,0,0),resolved:false,resolvedBy:null,resolvedAt:null},
+    {id:uid(),residentId:'C',priority:'Action Required',message:'Confirm transport for tomorrow 10:30 specialty appointment (demo). Escort: Loice.',authorId:'ann',createdAt:new Date().setHours(7,0,0,0),resolved:false,resolvedBy:null,resolvedAt:null},
+    {id:uid(),residentId:'D',priority:'Routine',message:'Care-plan review meeting with Family Contact (demo) next week.',authorId:'loice',createdAt:Date.now()-86400000,resolved:false,resolvedBy:null,resolvedAt:null},
+    {id:uid(),residentId:'A',priority:'Routine',message:'Preferred blanket washed and returned to Room 1 (demo).',authorId:'loice',createdAt:Date.now()-86400000*2,resolved:true,resolvedBy:'harun',resolvedAt:Date.now()-86400000},
+  ];
+  const incidents=[
+    {id:uid(),residentId:'B',datetime:new Date().setHours(6,40,0,0),type:'Near miss — transfer (demo)',location:'Room 2 bathroom',description:'During morning transfer, gait belt slipped briefly before re-secured. No injury (demo scenario).',immediateAction:'Stopped transfer, re-secured belt, completed safely.',notified:'Ann (on-call), Family Contact (demo) 555-0102',reporterId:'harun',severity:'Low',reviewStatus:'Pending Review',reviewNote:'',reviewedBy:null,reviewedAt:null,createdAt:new Date().setHours(7,10,0,0)},
+    {id:uid(),residentId:'A',datetime:Date.now()-86400000*5,type:'Medication timing delay (demo)',location:'Medication cart / Room 1',description:'AM medication 35 min late due to concurrent care needs (demo). No adverse effect.',immediateAction:'Administered, documented delay, monitored 1 hour.',notified:'Ann',reporterId:'loice',severity:'Low',reviewStatus:'Closed',reviewNote:'Reviewed process; closed (demo).',reviewedBy:'ann',reviewedAt:Date.now()-86400000*4,createdAt:Date.now()-86400000*5},
+  ];
+  const mkDoc=(rid,title,cat,by,date,status,extra='')=>({id:uid(),residentId:rid,title,category:cat,uploadedBy:by,date,status,content:'FICTIONAL DEMO DOCUMENT\n\n'+title+'\n\nPlaceholder content for demonstration only.\nContact: Family Contact (demo).\nProvider: Demo Family Clinic.\n'+extra});
+  const documents=[
+    mkDoc('A','Negotiated Care Plan — Resident A','Care Plan','ann',addDaysISO(-30),'Current'),
+    mkDoc('A','Assessment Summary — Resident A','Assessment','ann',addDaysISO(-45),'Current'),
+    mkDoc('A','Medication List — Resident A','Medication','harun',addDaysISO(-7),'Current','• Demo Multivitamin 1 tab daily'),
+    mkDoc('A','Emergency Information — Resident A','Emergency','ann',addDaysISO(-60),'Current','555-0101'),
+    mkDoc('B','Negotiated Care Plan — Resident B','Care Plan','ann',addDaysISO(-20),'Current'),
+    mkDoc('B','Assessment Summary — Resident B','Assessment','ann',addDaysISO(-40),'Current'),
+    mkDoc('B','Medication List — Resident B','Medication','loice',addDaysISO(-3),'Current','Allergy: Penicillin (demo)'),
+    mkDoc('B','Emergency Information — Resident B','Emergency','ann',addDaysISO(-50),'Current','555-0102'),
+    mkDoc('B','Hospital Discharge Document — Resident B','Discharge','ann',addDaysISO(-90),'Expired'),
+    mkDoc('C','Negotiated Care Plan — Resident C','Care Plan','ann',addDaysISO(-100),'Review due'),
+    mkDoc('C','Assessment Summary — Resident C','Assessment','ann',addDaysISO(-100),'Review due'),
+    mkDoc('C','Medication List — Resident C','Medication','harun',addDaysISO(-5),'Current','Allergy: Shellfish (demo)'),
+    mkDoc('C','Emergency Information — Resident C','Emergency','ann',addDaysISO(-55),'Current','555-0103'),
+    mkDoc('D','Negotiated Care Plan — Resident D','Care Plan','ann',addDaysISO(-110),'Review due'),
+    mkDoc('D','Assessment Summary — Resident D','Assessment','ann',addDaysISO(-110),'Current'),
+    mkDoc('D','Medication List — Resident D','Medication','loice',addDaysISO(-2),'Current','Allergy: Latex (demo)'),
+    mkDoc('D','Emergency Information — Resident D','Emergency','ann',addDaysISO(-70),'Current','555-0104'),
+    mkDoc('D','Swallow Study Notes — Resident D','Clinical','ann',addDaysISO(-80),'Draft'),
+  ];
+  const audit=[
+    {id:uid(),at:new Date().setHours(9,20,0,0),actorId:'harun',text:'Harun added a handover item for Resident B'},
+    {id:uid(),at:new Date().setHours(9,5,0,0),actorId:'harun',text:'Harun documented care for Resident B (Morning)'},
+    {id:uid(),at:new Date().setHours(8,45,0,0),actorId:'loice',text:'Loice documented care for Resident C (Morning)'},
+    {id:uid(),at:new Date().setHours(8,15,0,0),actorId:'harun',text:'Harun documented care for Resident A (Morning)'},
+    {id:uid(),at:new Date().setHours(7,50,0,0),actorId:'harun',text:'Harun documented care for Resident D (Morning)'},
+    {id:uid(),at:new Date().setHours(7,10,0,0),actorId:'harun',text:'Harun reported an incident for Resident B'},
+    {id:uid(),at:new Date().setHours(7,0,0,0),actorId:'ann',text:'Ann added a handover item for Resident C'},
+    {id:uid(),at:Date.now()-86400000*4,actorId:'ann',text:'Ann reviewed an incident for Resident A — Closed'},
+    {id:uid(),at:Date.now()-86400000*3,actorId:'ann',text:'Ann scheduled an appointment for Resident A'},
+    {id:uid(),at:Date.now()-86400000*5,actorId:'ann',text:'Ann scheduled an appointment for Resident C'},
+  ];
+  return{version:1,currentUserId:'ann',residents,careNotes,appointments,handovers,incidents,documents,audit};
+}
+let store=null;
+function loadStore(){try{const raw=localStorage.getItem(KEY);if(raw){const p=JSON.parse(raw);if(p&&p.version===1&&p.residents){store=p;return}}}catch(e){}store=buildSeed();persist()}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
+function resetStore(){store=buildSeed();persist();render()}
+function addAudit(text,actorId){store.audit.unshift({id:uid(),at:Date.now(),actorId:actorId||store.currentUserId,text});if(store.audit.length>200)store.audit.length=200}
+function getResident(id){return store.residents.find(r=>r.id===id)}
+function getDocStats(){
+  const today=todayISO(),expected=[],completedKeys=new Set();
+  store.residents.forEach(r=>SHIFTS.forEach(s=>expected.push({residentId:r.id,shift:s})));
+  store.careNotes.filter(n=>n.date===today).forEach(n=>completedKeys.add(n.residentId+'|'+n.shift));
+  const completed=expected.filter(e=>completedKeys.has(e.residentId+'|'+e.shift));
+  const due=expected.filter(e=>!completedKeys.has(e.residentId+'|'+e.shift));
+  return{expected:expected.length,completed:completed.length,due:due.length,dueList:due};
+}
+function getUpcoming(){const t=todayISO();return store.appointments.filter(a=>a.status==='Scheduled'&&a.date>=t)}
+function getOpenHO(){return store.handovers.filter(h=>!h.resolved)}
+function getPendingInc(){return store.incidents.filter(i=>i.reviewStatus==='Pending Review'||i.reviewStatus==='Under Review')}
+function getOpenFU(){return store.careNotes.filter(n=>n.followUpRequired&&!n.followUpResolved)}
+function getCPReviews(){return store.residents.filter(r=>r.carePlanStatus==='Review due')}
+function getActions(){
+  const items=[],today=todayISO(),tomorrow=addDaysISO(1),stats=getDocStats();
+  stats.dueList.forEach(d=>{const r=getResident(d.residentId);items.push({title:r.label+' — '+d.shift.toLowerCase()+' documentation required',meta:'Due today · '+r.room,pri:d.shift==='Evening'&&d.residentId==='B'?1:3,href:'#/document-care?resident='+d.residentId+'&shift='+encodeURIComponent(d.shift),icon:'clipboard'})});
+  getUpcoming().filter(a=>a.date===tomorrow||a.date===today).forEach(a=>{const r=getResident(a.residentId);items.push({title:r.label+' — appointment '+(a.date===today?'today':'tomorrow'),meta:fmtTO(a.time)+' · '+a.type,pri:a.date===tomorrow?2:1,href:'#/appointments?id='+a.id,icon:'calendar'})});
+  getCPReviews().forEach(r=>items.push({title:r.label+' — care-plan review approaching',meta:r.room+' · Review due',pri:2,href:'#/residents/'+r.id+'?tab=careplan',icon:'file'}));
+  getPendingInc().filter(i=>i.reviewStatus==='Pending Review').forEach(i=>{const r=getResident(i.residentId);items.push({title:'Incident — management review required',meta:r.label+' · '+i.type,pri:1,href:'#/incidents?id='+i.id,icon:'alert'})});
+  getOpenFU().forEach(n=>{const r=getResident(n.residentId);items.push({title:r.label+' — outstanding follow-up',meta:n.followUpDetail||'Follow-up from care note',pri:2,href:'#/management?section=followups',icon:'clock'})});
+  return items.sort((a,b)=>a.pri-b.pri).slice(0,12);
+}
+let sheetOnClose=null;
+function toast(msg,type){const w=document.getElementById('toast-wrap');const el=document.createElement('div');el.className='toast'+(type?' '+type:'');el.textContent=msg;w.appendChild(el);setTimeout(()=>el.remove(),3200)}
+function openSheet(title,body,footer,onClose){document.getElementById('sheet-title').textContent=title;document.getElementById('sheet-body').innerHTML=body;document.getElementById('sheet-footer').innerHTML=footer||'';sheetOnClose=onClose||null;document.getElementById('overlay').classList.add('open');document.body.style.overflow='hidden'}
+function closeSheet(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow='';if(sheetOnClose){const f=sheetOnClose;sheetOnClose=null;f()}}
+function confirmDialog(msg,onYes){openSheet('Confirm','<p style="font-size:.9rem;line-height:1.5">'+esc(msg)+'</p>','<button class="btn btn-s" type="button" data-action="sheet-cancel">Cancel</button><button class="btn btn-p" type="button" id="confirm-yes">Confirm</button>');document.getElementById('confirm-yes').onclick=()=>{closeSheet();onYes()}}
+function parseHash(){const hash=location.hash||'#/dashboard';const clean=hash.replace(/^#\/?/,'');const[pathPart,queryPart]=clean.split('?');const parts=pathPart.split('/').filter(Boolean);const params={};if(queryPart)queryPart.split('&').forEach(p=>{const[k,v]=p.split('=');params[decodeURIComponent(k)]=decodeURIComponent(v||'')});return{parts,params}}
+function navigate(h){location.hash=h.startsWith('#')?h:'#/'+h}
+const NAV=[
+  {id:'dashboard',label:'Dashboard',icon:'home',href:'#/dashboard',primary:true},
+  {id:'residents',label:'Residents',icon:'users',href:'#/residents',primary:true},
+  {id:'document-care',label:'Document Care',icon:'clipboard',href:'#/document-care',primary:true},
+  {id:'appointments',label:'Appointments',icon:'calendar',href:'#/appointments',primary:true},
+  {id:'handover',label:'Handover',icon:'handover',href:'#/handover',primary:false},
+  {id:'incidents',label:'Incidents',icon:'alert',href:'#/incidents',primary:false},
+  {id:'management',label:'Management',icon:'settings',href:'#/management',primary:false},
+];
+function activeNav(route){const p=route.parts[0]||'dashboard';return p==='residents'?'residents':p}
+function renderSidebar(route){
+  const active=activeNav(route),pending=getPendingInc().filter(i=>i.reviewStatus==='Pending Review').length,unres=getOpenHO().length;
+  let html='<div class="brand"><svg viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#1F5F5B"/><path d="M8 16 L16 9 L24 16 V24 H19 V19 H13 V24 H8 Z" fill="none" stroke="#FAF9F7" stroke-width="1.8" stroke-linejoin="round"/></svg><div><div class="brand-name">Blessed House</div><div class="brand-sub">Digital Care · Demo</div></div></div>';
+  NAV.forEach(item=>{let badge='';if(item.id==='incidents'&&pending)badge='<span class="nav-badge">'+pending+'</span>';if(item.id==='handover'&&unres)badge='<span class="nav-badge">'+unres+'</span>';html+='<button class="nav-item'+(active===item.id?' active':'')+'" type="button" data-nav="'+item.href+'">'+I[item.icon]+'<span>'+item.label+'</span>'+badge+'</button>'});
+  html+='<div class="side-foot">Concept demo · fictional data only<br><button class="btn btn-g btn-sm mt-2" type="button" data-action="reset-demo" style="font-size:.7rem;min-height:32px;padding:4px 8px">Reset demo data</button></div>';
+  document.getElementById('sidebar').innerHTML=html;
+}
+function renderBottomNav(route){
+  const active=activeNav(route),primary=NAV.filter(n=>n.primary),moreActive=!NAV.find(n=>n.primary&&n.id===active)&&active!=='more';
+  let html='';primary.forEach(item=>{html+='<button class="bnav-item'+(active===item.id?' active':'')+'" type="button" data-nav="'+item.href+'">'+I[item.icon]+'<span>'+item.label.split(' ')[0]+'</span></button>'});
+  html+='<button class="bnav-item'+(moreActive||active==='more'?' active':'')+'" type="button" data-action="open-more">'+I.more+'<span>More</span></button>';
+  document.getElementById('bottom-nav').innerHTML=html;
+}
+function renderTopbar(route){
+  const titles={dashboard:['Dashboard','Overview · Blessed House'],residents:['Residents','Directory'],'document-care':['Document Care','Record shift documentation'],appointments:['Appointments','Schedule & track'],handover:['Handover','Shift communication'],incidents:['Incidents','Report & review'],management:['Management','Operations overview'],more:['More','Additional modules']};
+  let title=titles[route.parts[0]]||titles.dashboard;
+  if(route.parts[0]==='residents'&&route.parts[1]){const r=getResident(route.parts[1]);title=[r?r.label:'Resident',r?r.room:'']}
+  const user=STAFF.find(s=>s.id===store.currentUserId)||STAFF[0];
+  document.getElementById('topbar').innerHTML='<div class="topbar-title"><h1>'+esc(title[0])+'</h1>'+(title[1]?'<div class="subtitle">'+esc(title[1])+'</div>':'')+'</div><div class="user-sw"><div class="avatar">'+user.initials+'</div><select id="user-select" aria-label="Current user">'+STAFF.map(s=>'<option value="'+s.id+'"'+(s.id===store.currentUserId?' selected':'')+'>'+s.name+'</option>').join('')+'</select></div>';
+}
+function apptCard(a){const r=getResident(a.residentId);return '<button class="card card-click li mb-2" type="button" data-action="view-appointment" data-id="'+a.id+'"><div class="li-ic">'+I.calendar+'</div><div class="li-bd"><div class="li-t">'+esc(r?r.label:'')+' · '+esc(a.type)+'</div><div class="li-m">'+fmtShort(a.date)+' · '+fmtTO(a.time)+' · '+esc(a.provider)+'</div></div><div class="li-r">'+badge(a.status)+'</div></button>'}
+function incidentCard(i){const r=getResident(i.residentId);return '<button class="card card-click li mb-2" type="button" data-action="view-incident" data-id="'+i.id+'"><div class="li-ic">'+I.alert+'</div><div class="li-bd"><div class="li-t">'+esc(i.type)+'</div><div class="li-m">'+(r?esc(r.label)+' · ':'')+fmtTime(i.datetime)+' · '+esc(i.severity)+'</div></div><div class="li-r">'+badge(i.reviewStatus)+'</div></button>'}
+function handoverCard(h){const r=getResident(h.residentId);const pc=h.priority==='Action Required'?'action':(h.priority==='Observe'?'observe':'routine');return '<div class="card li" data-handover-id="'+h.id+'"><div class="pbar '+pc+'"></div><div class="li-bd"><div class="li-t">'+esc(r?r.label:'')+' · '+badge(h.priority)+'</div><div class="li-m" style="margin-top:4px;color:var(--text);font-size:.85rem">'+esc(h.message)+'</div><div class="li-m mt-2">'+sn(h.authorId)+' · '+fmtTime(h.createdAt)+(h.resolved?' · Resolved by '+sn(h.resolvedBy)+' · '+fmtTime(h.resolvedAt):'')+'</div><div class="flex gap-2 mt-3">'+(h.resolved?'<button class="btn btn-s btn-sm" type="button" data-action="reopen-handover" data-id="'+h.id+'">Reopen</button>':'<button class="btn btn-p btn-sm" type="button" data-action="resolve-handover" data-id="'+h.id+'">Resolve</button>')+'</div></div></div>'}
+function viewDashboard(){
+  const stats=getDocStats(),upcoming=getUpcoming(),ho=getOpenHO(),inc=getPendingInc(),fu=getOpenFU(),rev=getCPReviews(),actions=getActions();
+  const tiles=[
+    {l:'Residents',v:store.residents.length,h:'Active',c:'accent',href:'#/residents'},
+    {l:'Docs completed',v:stats.completed+'/'+stats.expected,h:'Today',c:'ok',href:'#/document-care'},
+    {l:'Docs still due',v:stats.due,h:'Today',c:stats.due?'warn':'ok',href:'#/document-care'},
+    {l:'Upcoming appts',v:upcoming.length,h:'Scheduled',c:'accent',href:'#/appointments'},
+    {l:'Open handovers',v:ho.length,h:'Unresolved',c:ho.length?'warn':'',href:'#/handover'},
+    {l:'Incidents review',v:inc.length,h:'Awaiting / open',c:inc.length?'danger':'',href:'#/incidents'},
+    {l:'Follow-ups',v:fu.length,h:'Outstanding',c:fu.length?'warn':'',href:'#/management?section=followups'},
+    {l:'Care-plan reviews',v:rev.length,h:'Due',c:rev.length?'warn':'',href:'#/management?section=careplans'},
+  ];
+  let html='<div class="tiles">'+tiles.map(t=>'<button class="card card-click tile '+(t.c||'')+'" type="button" data-nav="'+t.href+'"><div class="tile-l">'+t.l+'</div><div class="tile-v">'+t.v+'</div><div class="tile-h">'+t.h+'</div></button>').join('')+'</div>';
+  html+='<div class="sec"><h2>Action Required</h2><span class="count">'+actions.length+' items</span></div>';
+  if(!actions.length)html+='<div class="card"><div class="empty">'+I.check+'No action items right now</div></div>';
+  else{html+='<div class="list">';actions.forEach(a=>{html+='<button class="card card-click li" type="button" data-nav="'+a.href+'"><div class="li-ic">'+I[a.icon]+'</div><div class="li-bd"><div class="li-t">'+esc(a.title)+'</div><div class="li-m">'+esc(a.meta)+'</div></div><div class="li-r">'+I.chevron+'</div></button>'});html+='</div>'}
+  return html;
+}
+function viewResidents(route){
+  const q=(route.params.q||'').toLowerCase();
+  let list=store.residents;
+  if(q)list=list.filter(r=>r.label.toLowerCase().includes(q)||r.room.toLowerCase().includes(q)||r.status.toLowerCase().includes(q)||(r.alerts||[]).some(a=>a.toLowerCase().includes(q)));
+  let html='<div class="search"><input class="fc" type="search" id="resident-search" placeholder="Search by label, room, status…" value="'+esc(route.params.q||'')+'" autocomplete="off"></div><div class="list">';
+  if(!list.length)html+='<div class="card"><div class="empty">No residents match</div></div>';
+  else list.forEach(r=>{html+='<button class="card card-click rcard" type="button" data-nav="#/residents/'+r.id+'"><div class="rav">'+r.id+'</div><div class="ri"><div class="name">'+esc(r.label)+'</div><div class="meta">'+esc(r.room)+' · '+badge(r.status)+'</div>'+(r.alerts&&r.alerts.length?'<div class="alerts">'+r.alerts.map(a=>'<span class="badge b-observe">'+esc(a)+'</span>').join('')+'</div>':'')+'</div>'+I.chevron+'</button>'});
+  return html+'</div>';
+}
+function viewResidentDetail(route){
+  const r=getResident(route.parts[1]);if(!r)return'<div class="empty">Resident not found</div>';
+  const tab=route.params.tab||'overview';
+  const tabs=[{id:'overview',label:'Overview'},{id:'careplan',label:'Care Plan'},{id:'notes',label:'Daily Notes'},{id:'meds',label:'Medication'},{id:'appointments',label:'Appointments'},{id:'documents',label:'Documents'},{id:'incidents',label:'Incidents'},{id:'activity',label:'Activity'}];
+  let html='<button class="btn btn-g btn-sm mb-2" type="button" data-nav="#/residents" style="padding-left:0">← All residents</button>';
+  html+='<div class="rhead"><div class="rh-top"><div class="rh-av">'+r.id+'</div><div style="flex:1;min-width:0"><h2 style="font-size:1.1rem">'+esc(r.label)+'</h2><div class="sm muted mt-2">'+esc(r.room)+' · '+badge(r.status)+'</div></div></div>';
+  html+='<div class="facts"><div><div class="flab">Diet</div><div class="fval">'+esc(r.diet)+'</div></div><div><div class="flab">Mobility</div><div class="fval">'+esc(r.mobility)+'</div></div><div><div class="flab">Allergies</div><div class="fval">'+esc(r.allergies)+'</div></div><div><div class="flab">Care plan</div><div class="fval">'+badge(r.carePlanStatus)+'</div></div></div>';
+  if(r.alerts&&r.alerts.length)html+='<div class="mt-3 flex flex-wrap gap-2">'+r.alerts.map(a=>'<span class="badge b-observe">'+esc(a)+'</span>').join('')+'</div>';
+  html+='<div class="ractions"><button class="btn btn-p btn-sm" type="button" data-nav="#/document-care?resident='+r.id+'">'+I.clipboard+' Document care</button><button class="btn btn-s btn-sm" type="button" data-action="add-appointment" data-resident="'+r.id+'">'+I.plus+' Appointment</button><button class="btn btn-s btn-sm" type="button" data-action="report-incident" data-resident="'+r.id+'">'+I.alert+' Incident</button><button class="btn btn-s btn-sm" type="button" data-action="add-handover" data-resident="'+r.id+'">'+I.handover+' Handover</button></div></div>';
+  html+='<div class="tabs-sc"><div class="tabs">'+tabs.map(t=>'<button class="tab'+(tab===t.id?' active':'')+'" type="button" data-nav="#/residents/'+r.id+'?tab='+t.id+'">'+t.label+'</button>').join('')+'</div></div><div class="card card-pad">';
+  if(tab==='overview'){html+='<p style="font-size:.875rem;line-height:1.55;margin-bottom:12px">'+esc(r.overview)+'</p><div class="drow"><div class="dl">Room</div><div class="dv">'+esc(r.room)+'</div></div><div class="drow"><div class="dl">Status</div><div class="dv">'+badge(r.status)+'</div></div><div class="drow"><div class="dl">Diet</div><div class="dv">'+esc(r.diet)+'</div></div><div class="drow"><div class="dl">Mobility</div><div class="dv">'+esc(r.mobility)+'</div></div><div class="drow"><div class="dl">Allergies</div><div class="dv">'+esc(r.allergies)+'</div></div><div class="drow"><div class="dl">Care plan</div><div class="dv">'+badge(r.carePlanStatus)+'</div></div>'}
+  else if(tab==='careplan'){const docs=store.documents.filter(d=>d.residentId===r.id&&d.category==='Care Plan');html+='<h3 class="mb-3">Care Plan</h3><p class="sm muted mb-3">Status: '+badge(r.carePlanStatus)+'</p>';if(r.carePlanStatus==='Review due')html+='<div class="confirm mb-3" style="background:var(--warn-bg);border-color:#FCD34D"><h3 style="color:var(--warn)">Review approaching</h3><p>The negotiated care plan for '+esc(r.label)+' is due for review (demo).</p></div>';docs.forEach(d=>{html+='<button class="card card-click li mb-2" type="button" data-action="view-document" data-id="'+d.id+'"><div class="li-ic">'+I.file+'</div><div class="li-bd"><div class="li-t">'+esc(d.title)+'</div><div class="li-m">'+fmtShort(d.date)+' · '+badge(d.status)+'</div></div></button>'})}
+  else if(tab==='notes'){const notes=store.careNotes.filter(n=>n.residentId===r.id).sort((a,b)=>b.createdAt-a.createdAt);html+='<div class="flex just-b items-c mb-3"><h3>Daily Notes</h3><button class="btn btn-p btn-sm" type="button" data-nav="#/document-care?resident='+r.id+'">'+I.plus+' Add note</button></div>';if(!notes.length)html+='<div class="empty">No care notes yet</div>';notes.forEach(n=>{html+='<div class="card note mb-2"><div class="note-m"><span>'+fmtDate(n.date)+'</span><span>'+esc(n.shift)+'</span><span>'+sn(n.authorId)+'</span>'+(n.followUpRequired?(n.followUpResolved?'<span class="badge b-closed">Follow-up resolved</span>':'<span class="badge b-observe">Follow-up</span>'):'')+'</div><div class="note-b">'+esc(n.narrative)+'</div><div class="note-f"><div><span class="nfl">Meals: </span>'+esc(n.meals)+'</div><div><span class="nfl">Fluid: </span>'+esc(n.fluid)+'</div><div><span class="nfl">Mobility: </span>'+esc(n.mobility)+'</div><div><span class="nfl">Mood: </span>'+esc(n.mood)+'</div></div></div>'})}
+  else if(tab==='meds'){const meds=store.documents.filter(d=>d.residentId===r.id&&d.category==='Medication');html+='<h3 class="mb-3">Medication overview</h3><p class="sm muted mb-3">Demo medication records only — not clinical orders.</p>';meds.forEach(d=>{html+='<button class="card card-click li mb-2" type="button" data-action="view-document" data-id="'+d.id+'"><div class="li-ic">'+I.file+'</div><div class="li-bd"><div class="li-t">'+esc(d.title)+'</div><div class="li-m">Updated '+fmtShort(d.date)+' · '+badge(d.status)+'</div></div></button>'});html+='<p class="sm mt-3"><strong>Allergies:</strong> '+esc(r.allergies)+'</p>'}
+  else if(tab==='appointments'){const appts=store.appointments.filter(a=>a.residentId===r.id).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));html+='<div class="flex just-b items-c mb-3"><h3>Appointments</h3><button class="btn btn-p btn-sm" type="button" data-action="add-appointment" data-resident="'+r.id+'">'+I.plus+' Add</button></div>';if(!appts.length)html+='<div class="empty">No appointments</div>';appts.forEach(a=>{html+=apptCard(a)})}
+  else if(tab==='documents'){const docs=store.documents.filter(d=>d.residentId===r.id);html+='<div class="flex just-b items-c mb-3"><h3>Documents</h3><button class="btn btn-p btn-sm" type="button" data-action="add-document" data-resident="'+r.id+'">'+I.plus+' Add Demo Document</button></div>';docs.forEach(d=>{html+='<button class="card card-click li mb-2" type="button" data-action="view-document" data-id="'+d.id+'"><div class="li-ic">'+I.file+'</div><div class="li-bd"><div class="li-t">'+esc(d.title)+'</div><div class="li-m">'+esc(d.category)+' · '+fmtShort(d.date)+' · '+sn(d.uploadedBy)+' · '+badge(d.status)+'</div></div></button>'})}
+  else if(tab==='incidents'){const incs=store.incidents.filter(i=>i.residentId===r.id);html+='<div class="flex just-b items-c mb-3"><h3>Incidents</h3><button class="btn btn-s btn-sm" type="button" data-action="report-incident" data-resident="'+r.id+'">'+I.plus+' Report</button></div>';if(!incs.length)html+='<div class="empty">No incidents</div>';incs.forEach(i=>{html+=incidentCard(i)})}
+  else if(tab==='activity'){const logs=store.audit.filter(a=>a.text.includes(r.label)).slice(0,40);html+='<h3 class="mb-3">Activity / Audit History</h3>';if(!logs.length)html+='<div class="empty">No activity yet</div>';else logs.forEach(a=>{html+='<div class="audit"><div class="adot"></div><div><div>'+esc(a.text)+'</div><div class="atime">'+fmtTime(a.at)+' · '+sn(a.actorId)+'</div></div></div>'})}
+  return html+'</div>';
+}
+function viewDocumentCare(route){
+  const preRes=route.params.resident||'',preShift=route.params.shift||'';
+  const caregivers=STAFF.filter(s=>s.id==='harun'||s.id==='loice');
+  const defaultCg=store.currentUserId==='loice'?'loice':'harun';
+  const stats=getDocStats();
+  let html='<div class="card card-pad mb-3"><div class="flex just-b items-c"><div><div class="sm muted">Documentation today</div><div class="fw" style="font-size:1.1rem">'+stats.completed+' of '+stats.expected+' completed</div></div><div class="sm">'+(stats.due?'<span class="badge b-observe">'+stats.due+' due</span>':'<span class="badge b-stable">All done</span>')+'</div></div>';
+  if(stats.dueList.length)html+='<div class="mt-3 sm muted">Still due: '+stats.dueList.map(d=>{const r=getResident(d.residentId);return esc(r.label)+' ('+d.shift+')'}).join(', ')+'</div>';
+  html+='</div><div class="card card-pad" id="care-form-wrap"><h3 class="mb-3">New care note</h3><form id="care-form">';
+  html+='<div class="fr"><div class="fg"><label class="fl">Resident<span class="req">*</span></label><select class="fs" name="residentId" id="cf-resident" required><option value="">Select…</option>'+store.residents.map(r=>'<option value="'+r.id+'"'+(preRes===r.id?' selected':'')+'>'+esc(r.label)+' · '+esc(r.room)+'</option>').join('')+'</select><div class="ferr hidden" data-err="residentId"></div></div>';
+  html+='<div class="fg"><label class="fl">Caregiver<span class="req">*</span></label><select class="fs" name="caregiverId">'+caregivers.map(s=>'<option value="'+s.id+'"'+(s.id===defaultCg?' selected':'')+'>'+s.name+'</option>').join('')+'</select></div></div>';
+  html+='<div class="fg"><label class="fl">Shift<span class="req">*</span></label><div class="seg" id="cf-shift-seg">'+SHIFTS.map(s=>'<button type="button" data-action="cf-shift" data-shift="'+s+'" class="'+(preShift===s?'active':'')+'">'+s+'</button>').join('')+'</div><input type="hidden" name="shift" id="cf-shift" value="'+esc(preShift)+'"><div class="ferr hidden" data-err="shift"></div></div>';
+  html+='<div class="fg"><label class="fl">Meals<span class="req">*</span></label><select class="fs" name="meals"><option value="">Select…</option><option>Breakfast 100%, Lunch 100%, Dinner 100%</option><option>Breakfast 100%, Lunch 75%, Dinner 75%</option><option>Breakfast 75%, Lunch 50%, Dinner 75%</option><option>Breakfast 50%, Lunch 50%, Dinner 50%</option><option>Snack / partial intake</option><option>Refused / NPO (demo)</option></select><div class="ferr hidden" data-err="meals"></div></div>';
+  html+='<div class="fr"><div class="fg"><label class="fl">Fluid intake<span class="req">*</span></label><select class="fs" name="fluid"><option value="">Select…</option><option>Adequate (≥1000 mL)</option><option>Adequate (800–1000 mL)</option><option>Reduced (600–800 mL)</option><option>Reduced (&lt;600 mL)</option><option>Thickened fluids — adequate</option></select><div class="ferr hidden" data-err="fluid"></div></div>';
+  html+='<div class="fg"><label class="fl">Toileting<span class="req">*</span></label><select class="fs" name="toileting"><option value="">Select…</option><option>Independent</option><option>Independent with cueing</option><option>Assisted</option><option>Two-person assist</option><option>Incontinence care provided</option></select><div class="ferr hidden" data-err="toileting"></div></div></div>';
+  html+='<div class="fr"><div class="fg"><label class="fl">Bathing / hygiene<span class="req">*</span></label><select class="fs" name="bathing"><option value="">Select…</option><option>Independent</option><option>Assisted shower</option><option>Bed / sponge bath</option><option>PM hygiene completed</option><option>Deferred / refused</option></select><div class="ferr hidden" data-err="bathing"></div></div>';
+  html+='<div class="fg"><label class="fl">Mobility<span class="req">*</span></label><select class="fs" name="mobility"><option value="">Select…</option><option>Independent</option><option>Walker / cane — steady</option><option>One-person assist</option><option>Two-person assist / transfer</option><option>Wheelchair — transfers OK</option></select><div class="ferr hidden" data-err="mobility"></div></div></div>';
+  html+='<div class="fr"><div class="fg"><label class="fl">Activities</label><input class="fc" name="activities" placeholder="e.g. Music, rest, stretch"></div>';
+  html+='<div class="fg"><label class="fl">Mood / behaviour<span class="req">*</span></label><select class="fs" name="mood"><option value="">Select…</option><option>Pleasant, engaged</option><option>Calm</option><option>Quiet, cooperative</option><option>Anxious / restless</option><option>Withdrawn</option></select><div class="ferr hidden" data-err="mood"></div></div></div>';
+  html+='<div class="fg" id="cf-sleep-group"><label class="fl">Sleep <span class="muted">(emphasised for Night)</span></label><input class="fc" name="sleep" placeholder="e.g. Slept 22:00–06:00, one wake"></div>';
+  html+='<div class="fg"><label class="fl">Changes from baseline<span class="req">*</span></label><div class="seg" id="cf-changes-seg"><button type="button" data-action="cf-changes" data-val="No" class="active">No</button><button type="button" data-action="cf-changes" data-val="Yes">Yes</button></div><input type="hidden" name="changesBaseline" id="cf-changes" value="No"><div id="cf-changes-detail-wrap" class="hidden mt-2"><textarea class="ft" name="changesDetail" placeholder="Describe changes…"></textarea></div></div>';
+  html+='<div class="fg"><label class="fcheck"><input type="checkbox" name="followUpRequired" id="cf-fu"> Follow-up required</label><div id="cf-fu-wrap" class="hidden mt-2"><textarea class="ft" name="followUpDetail" placeholder="Follow-up detail…"></textarea><label class="fl mt-2">Due date</label><input class="fc" type="date" name="followUpDue" value="'+todayISO()+'"></div></div>';
+  html+='<div class="fg"><label class="fl">Narrative notes<span class="req">*</span></label><textarea class="ft" name="narrative" placeholder="Summary of care provided…"></textarea><div class="ferr hidden" data-err="narrative"></div></div>';
+  html+='<button class="btn btn-p btn-block" type="submit">Submit Care Note</button></form><div id="care-confirm" class="hidden"></div></div>';
+  return html;
+}
+function viewAppointments(route){
+  const filter=route.params.filter||'upcoming',today=todayISO(),all=store.appointments;
+  const counts={today:all.filter(a=>a.date===today&&a.status==='Scheduled').length,upcoming:all.filter(a=>a.status==='Scheduled'&&a.date>=today).length,completed:all.filter(a=>a.status==='Completed').length,cancelled:all.filter(a=>a.status==='Cancelled').length};
+  let list=all;
+  if(filter==='today')list=all.filter(a=>a.date===today&&a.status==='Scheduled');
+  else if(filter==='upcoming')list=all.filter(a=>a.status==='Scheduled'&&a.date>=today);
+  else if(filter==='completed')list=all.filter(a=>a.status==='Completed');
+  else if(filter==='cancelled')list=all.filter(a=>a.status==='Cancelled');
+  list=list.slice().sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  if(filter==='completed'||filter==='cancelled')list.reverse();
+  let html='<div class="seg mb-3">'+['today','upcoming','completed','cancelled'].map(f=>'<button type="button" class="'+(filter===f?'active':'')+'" data-nav="#/appointments?filter='+f+'">'+f.charAt(0).toUpperCase()+f.slice(1)+'<span class="sc">'+counts[f]+'</span></button>').join('')+'</div>';
+  html+='<button class="btn btn-p btn-block mb-3" type="button" data-action="add-appointment">'+I.plus+' Add Appointment</button>';
+  if(!list.length)html+='<div class="card"><div class="empty">'+I.calendar+'No appointments in this view</div></div>';
+  else{html+='<div class="list">';list.forEach(a=>{html+=apptCard(a)});html+='</div>'}
+  return html;
+}
+function viewHandover(){
+  const open=store.handovers.filter(h=>!h.resolved).sort((a,b)=>b.createdAt-a.createdAt);
+  const resolved=store.handovers.filter(h=>h.resolved).sort((a,b)=>(b.resolvedAt||0)-(a.resolvedAt||0));
+  let html='<button class="btn btn-p btn-block mb-3" type="button" data-action="add-handover">'+I.plus+' Add Handover Item</button>';
+  html+='<div class="sec"><h2>Open</h2><span class="count">'+open.length+'</span></div>';
+  if(!open.length)html+='<div class="card"><div class="empty">No open handover items</div></div>';
+  else{html+='<div class="list">';open.forEach(h=>{html+=handoverCard(h)});html+='</div>'}
+  html+='<div class="sec"><h2>Resolved</h2><span class="count">'+resolved.length+'</span></div>';
+  if(!resolved.length)html+='<div class="card"><div class="empty">None resolved yet</div></div>';
+  else{html+='<div class="list">';resolved.slice(0,10).forEach(h=>{html+=handoverCard(h)});html+='</div>'}
+  return html;
+}
+function viewIncidents(route){
+  let html='<button class="btn btn-p btn-block mb-3" type="button" data-action="report-incident">'+I.plus+' Report Incident</button>';
+  const list=store.incidents.slice().sort((a,b)=>b.createdAt-a.createdAt);
+  if(!list.length)html+='<div class="card"><div class="empty">No incidents</div></div>';
+  else{html+='<div class="list">';list.forEach(i=>{html+=incidentCard(i)});html+='</div>'}
+  return html;
+}
+function viewManagement(route){
+  const stats=getDocStats(),pct=Math.round((stats.completed/stats.expected)*100);
+  const missing={};stats.dueList.forEach(d=>{if(!missing[d.residentId])missing[d.residentId]=[];missing[d.residentId].push(d.shift)});
+  const upcoming=getUpcoming(),ho=getOpenHO(),inc=getPendingInc(),fu=getOpenFU(),rev=getCPReviews();
+  const docStatus={Current:0,'Review due':0,Expired:0,Draft:0};store.documents.forEach(d=>{if(docStatus[d.status]!=null)docStatus[d.status]++});
+  let html='<div class="card card-pad mb-3"><h3 class="mb-2">Documentation completion</h3><div class="flex just-b sm mb-2"><span>'+stats.completed+' of '+stats.expected+' today</span><span class="fw">'+pct+'%</span></div><div class="prog"><div class="prog-b" style="width:'+pct+'%"></div></div></div><div class="d2">';
+  html+='<div class="card card-pad mb-3"><h3 class="mb-3">Residents missing documentation</h3>';
+  const missIds=Object.keys(missing);if(!missIds.length)html+='<div class="sm muted">All expected documentation complete</div>';
+  else missIds.forEach(id=>{const r=getResident(id);html+='<button class="card card-click li mb-2" type="button" data-nav="#/document-care?resident='+id+'&shift='+encodeURIComponent(missing[id][0])+'" style="border:1px solid var(--border)"><div class="li-bd"><div class="li-t">'+esc(r.label)+'</div><div class="li-m">Missing: '+missing[id].join(', ')+'</div></div></button>'});
+  html+='</div><div class="card card-pad mb-3"><h3 class="mb-3">Open incidents</h3>';
+  if(!inc.length)html+='<div class="sm muted">None open</div>';else inc.forEach(i=>{html+=incidentCard(i)});
+  html+='</div><div class="card card-pad mb-3"><h3 class="mb-3">Open handover items</h3>';
+  if(!ho.length)html+='<div class="sm muted">None open</div>';else ho.forEach(h=>{const r=getResident(h.residentId);html+='<button class="card card-click li mb-2" type="button" data-nav="#/handover" style="border:1px solid var(--border)"><div class="li-bd"><div class="li-t">'+esc(r.label)+' · '+badge(h.priority)+'</div><div class="li-m">'+esc(h.message.slice(0,80))+(h.message.length>80?'…':'')+'</div></div></button>'});
+  html+='</div><div class="card card-pad mb-3"><h3 class="mb-3">Upcoming appointments</h3>';
+  if(!upcoming.length)html+='<div class="sm muted">None scheduled</div>';else upcoming.slice(0,5).forEach(a=>{html+=apptCard(a)});
+  html+='</div></div>';
+  html+='<div class="card card-pad mb-3" id="mgmt-followups"><h3 class="mb-3">Overdue / outstanding follow-ups</h3>';
+  if(!fu.length)html+='<div class="sm muted">No outstanding follow-ups</div>';
+  else fu.forEach(n=>{const r=getResident(n.residentId);html+='<div class="card li mb-2" style="border:1px solid var(--border)"><div class="li-bd"><div class="li-t">'+esc(r.label)+' · '+esc(n.shift)+' · '+fmtShort(n.date)+'</div><div class="li-m">'+esc(n.followUpDetail)+'</div><div class="li-m">Due: '+(n.followUpDue?fmtShort(n.followUpDue):'—')+'</div><button class="btn btn-p btn-sm mt-2" type="button" data-action="resolve-followup" data-id="'+n.id+'">Resolve follow-up</button></div></div>'});
+  html+='</div><div class="card card-pad mb-3" id="mgmt-careplans"><h3 class="mb-3">Care-plan reviews due</h3>';
+  if(!rev.length)html+='<div class="sm muted">None due</div>';
+  else rev.forEach(r=>{html+='<button class="card card-click li mb-2" type="button" data-nav="#/residents/'+r.id+'?tab=careplan" style="border:1px solid var(--border)"><div class="li-bd"><div class="li-t">'+esc(r.label)+'</div><div class="li-m">'+esc(r.room)+' · '+badge(r.carePlanStatus)+'</div></div></button>'});
+  html+='</div><div class="card card-pad mb-3"><h3 class="mb-3">Document status</h3><div class="tiles" style="grid-template-columns:repeat(2,1fr)">'+Object.keys(docStatus).map(k=>'<div class="tile" style="background:var(--bg);border-radius:var(--rs)"><div class="tile-l">'+k+'</div><div class="tile-v" style="font-size:1.2rem">'+docStatus[k]+'</div></div>').join('')+'</div></div>';
+  html+='<div class="card card-pad mb-3"><h3 class="mb-3">Incident review queue</h3>';
+  const queue=store.incidents.filter(i=>i.reviewStatus!=='Closed');
+  if(!queue.length)html+='<div class="sm muted">Queue empty</div>';
+  else queue.forEach(i=>{const r=getResident(i.residentId);html+='<div class="card mb-2" style="border:1px solid var(--border);padding:12px"><div class="fw">'+esc(i.type)+'</div><div class="sm muted mt-2">'+esc(r.label)+' · '+fmtTime(i.datetime)+' · '+badge(i.reviewStatus)+'</div><div class="flex flex-wrap gap-2 mt-3"><button class="btn btn-s btn-sm" type="button" data-action="view-incident" data-id="'+i.id+'">View</button>'+(i.reviewStatus==='Pending Review'?'<button class="btn btn-p btn-sm" type="button" data-action="set-incident-status" data-id="'+i.id+'" data-status="Under Review">Under Review</button>':'')+(i.reviewStatus!=='Closed'?'<button class="btn btn-s btn-sm" type="button" data-action="set-incident-status" data-id="'+i.id+'" data-status="Closed">Close</button>':'')+'</div></div>'});
+  html+='</div><div class="card card-pad mb-3"><h3 class="mb-3">Recent staff activity</h3>';
+  store.audit.slice(0,15).forEach(a=>{html+='<div class="audit"><div class="adot"></div><div><div>'+esc(a.text)+'</div><div class="atime">'+fmtTime(a.at)+' · '+sn(a.actorId)+'</div></div></div>'});
+  html+='</div><button class="btn btn-g btn-sm" type="button" data-action="reset-demo">Reset demo data</button>';
+  setTimeout(()=>{if(route.params.section==='followups'){const el=document.getElementById('mgmt-followups');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}if(route.params.section==='careplans'){const el=document.getElementById('mgmt-careplans');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}},50);
+  return html;
+}
+function viewMore(){
+  let html='<div class="card card-pad"><div class="more-m">';
+  NAV.filter(n=>!n.primary).forEach(item=>{html+='<button type="button" data-nav="'+item.href+'">'+I[item.icon]+'<span>'+item.label+'</span></button>'});
+  html+='<button type="button" data-action="reset-demo">'+I.settings+'<span>Reset demo data</span></button></div></div>';
+  html+='<p class="sm muted mt-3" style="padding:0 4px">Blessed House Digital Care is a concept demonstration. All resident information is fictional.</p>';
+  return html;
+}
+function showAppointmentForm(existing,preResident){
+  const a=existing||{},isEdit=!!existing;
+  const resOpts=store.residents.map(r=>'<option value="'+r.id+'"'+((a.residentId||preResident)===r.id?' selected':'')+'>'+esc(r.label)+'</option>').join('');
+  const escortOpts=STAFF.map(s=>'<option value="'+s.name+'"'+((a.escort||'')===s.name?' selected':'')+'>'+s.name+'</option>').join('');
+  const body='<form id="appt-form"><div class="fg"><label class="fl">Resident<span class="req">*</span></label><select class="fs" name="residentId" required>'+resOpts+'</select></div><div class="fr"><div class="fg"><label class="fl">Date<span class="req">*</span></label><input class="fc" type="date" name="date" value="'+(a.date||todayISO())+'" required></div><div class="fg"><label class="fl">Time<span class="req">*</span></label><input class="fc" type="time" name="time" value="'+(a.time||'10:00')+'" required></div></div><div class="fg"><label class="fl">Type / reason<span class="req">*</span></label><input class="fc" name="type" value="'+esc(a.type||'')+'" placeholder="e.g. Primary care check-in (demo)" required></div><div class="fg"><label class="fl">Provider<span class="req">*</span></label><input class="fc" name="provider" value="'+esc(a.provider||'Demo Family Clinic')+'" required></div><div class="fg"><label class="fl">Location</label><input class="fc" name="location" value="'+esc(a.location||'')+'"></div><div class="fr"><div class="fg"><label class="fl">Transport required</label><select class="fs" name="transport"><option value="no"'+( !a.transport?' selected':'')+'>No</option><option value="yes"'+(a.transport?' selected':'')+'>Yes</option></select></div><div class="fg"><label class="fl">Escort / caregiver</label><select class="fs" name="escort"><option value="">—</option>'+escortOpts+'</select></div></div><div class="fg"><label class="fl">Notes</label><textarea class="ft" name="notes">'+esc(a.notes||'')+'</textarea></div><div class="fg"><label class="fl">Status</label><select class="fs" name="status">'+['Scheduled','Completed','Cancelled'].map(s=>'<option'+((a.status||'Scheduled')===s?' selected':'')+'>'+s+'</option>').join('')+'</select></div></form>';
+  openSheet(isEdit?'Edit Appointment':'Add Appointment',body,'<button class="btn btn-s" type="button" data-action="sheet-cancel">Cancel</button><button class="btn btn-p" type="button" id="appt-save">'+(isEdit?'Save changes':'Create')+'</button>');
+  document.getElementById('appt-save').onclick=()=>{const form=document.getElementById('appt-form');if(!form.reportValidity())return;const fd=new FormData(form);const data={residentId:fd.get('residentId'),date:fd.get('date'),time:fd.get('time'),type:fd.get('type'),provider:fd.get('provider'),location:fd.get('location'),transport:fd.get('transport')==='yes',escort:fd.get('escort'),notes:fd.get('notes'),status:fd.get('status')};const r=getResident(data.residentId);if(isEdit){Object.assign(a,data);addAudit(sn(store.currentUserId)+' updated an appointment for '+r.label);toast('Appointment updated','ok')}else{store.appointments.push({id:uid(),...data,createdAt:Date.now(),authorId:store.currentUserId});addAudit(sn(store.currentUserId)+' scheduled an appointment for '+r.label);toast('Appointment created','ok')}closeSheet();persist();render();navigate('#/appointments')};
+}
+function showAppointmentDetail(id){
+  const a=store.appointments.find(x=>x.id===id);if(!a)return;const r=getResident(a.residentId);
+  const body='<div class="drow"><div class="dl">Resident</div><div class="dv"><button type="button" data-nav="#/residents/'+a.residentId+'" style="color:var(--accent);font-weight:500">'+esc(r.label)+'</button></div></div><div class="drow"><div class="dl">When</div><div class="dv">'+fmtDate(a.date)+' · '+fmtTO(a.time)+'</div></div><div class="drow"><div class="dl">Type</div><div class="dv">'+esc(a.type)+'</div></div><div class="drow"><div class="dl">Provider</div><div class="dv">'+esc(a.provider)+'</div></div><div class="drow"><div class="dl">Location</div><div class="dv">'+esc(a.location||'—')+'</div></div><div class="drow"><div class="dl">Transport</div><div class="dv">'+(a.transport?'Yes':'No')+'</div></div><div class="drow"><div class="dl">Escort</div><div class="dv">'+esc(a.escort||'—')+'</div></div><div class="drow"><div class="dl">Status</div><div class="dv">'+badge(a.status)+'</div></div><div class="drow"><div class="dl">Notes</div><div class="dv">'+esc(a.notes||'—')+'</div></div>';
+  let footer='<button class="btn btn-s" type="button" data-action="edit-appointment" data-id="'+a.id+'">Edit</button>';
+  if(a.status==='Scheduled'){footer+='<button class="btn btn-p" type="button" data-action="complete-appointment" data-id="'+a.id+'">Mark completed</button></div><div class="sf" style="border-top:none;padding-top:0"><button class="btn btn-d btn-block" type="button" data-action="cancel-appointment" data-id="'+a.id+'">Cancel appointment</button>'}
+  else footer+='<button class="btn btn-s" type="button" data-action="reschedule-appointment" data-id="'+a.id+'">Set to Scheduled</button>';
+  openSheet('Appointment',body,footer);
+}
+function showIncidentForm(preResident){
+  const resOpts=store.residents.map(r=>'<option value="'+r.id+'"'+(preResident===r.id?' selected':'')+'>'+esc(r.label)+'</option>').join('');
+  const now=new Date();const localDT=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+'T'+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const body='<form id="inc-form"><div class="fg"><label class="fl">Resident<span class="req">*</span></label><select class="fs" name="residentId" required>'+resOpts+'</select></div><div class="fg"><label class="fl">Date / time<span class="req">*</span></label><input class="fc" type="datetime-local" name="datetime" value="'+localDT+'" required></div><div class="fg"><label class="fl">Incident type<span class="req">*</span></label><input class="fc" name="type" placeholder="e.g. Near miss — transfer (demo)" required></div><div class="fg"><label class="fl">Location<span class="req">*</span></label><input class="fc" name="location" required></div><div class="fg"><label class="fl">Description<span class="req">*</span></label><textarea class="ft" name="description" required></textarea></div><div class="fg"><label class="fl">Immediate action taken<span class="req">*</span></label><textarea class="ft" name="immediateAction" required></textarea></div><div class="fg"><label class="fl">Who was notified</label><input class="fc" name="notified" placeholder="e.g. Ann, Family Contact (demo) 555-010x"></div><div class="fr"><div class="fg"><label class="fl">Reporting caregiver<span class="req">*</span></label><select class="fs" name="reporterId">'+STAFF.map(s=>'<option value="'+s.id+'"'+(s.id===store.currentUserId?' selected':'')+'>'+s.name+'</option>').join('')+'</select></div><div class="fg"><label class="fl">Severity</label><select class="fs" name="severity"><option>Low</option><option>Medium</option><option>High</option></select></div></div></form>';
+  openSheet('Report Incident',body,'<button class="btn btn-s" type="button" data-action="sheet-cancel">Cancel</button><button class="btn btn-p" type="button" id="inc-save">Submit Report</button>');
+  document.getElementById('inc-save').onclick=()=>{const form=document.getElementById('inc-form');if(!form.reportValidity())return;const fd=new FormData(form);const r=getResident(fd.get('residentId'));store.incidents.unshift({id:uid(),residentId:fd.get('residentId'),datetime:new Date(fd.get('datetime')).getTime(),type:fd.get('type'),location:fd.get('location'),description:fd.get('description'),immediateAction:fd.get('immediateAction'),notified:fd.get('notified'),reporterId:fd.get('reporterId'),severity:fd.get('severity'),reviewStatus:'Pending Review',reviewNote:'',reviewedBy:null,reviewedAt:null,createdAt:Date.now()});addAudit(sn(fd.get('reporterId'))+' reported an incident for '+r.label);toast('Incident reported — pending management review','ok');closeSheet();persist();render();navigate('#/incidents')};
+}
+function showIncidentDetail(id){
+  const i=store.incidents.find(x=>x.id===id);if(!i)return;const r=getResident(i.residentId);
+  const body='<div class="drow"><div class="dl">Resident</div><div class="dv"><button type="button" data-nav="#/residents/'+i.residentId+'" style="color:var(--accent);font-weight:500">'+esc(r.label)+'</button></div></div><div class="drow"><div class="dl">When</div><div class="dv">'+fmtTime(i.datetime)+'</div></div><div class="drow"><div class="dl">Type</div><div class="dv">'+esc(i.type)+'</div></div><div class="drow"><div class="dl">Location</div><div class="dv">'+esc(i.location)+'</div></div><div class="drow"><div class="dl">Severity</div><div class="dv">'+esc(i.severity)+'</div></div><div class="drow"><div class="dl">Status</div><div class="dv">'+badge(i.reviewStatus)+'</div></div><div class="drow"><div class="dl">Reporter</div><div class="dv">'+sn(i.reporterId)+'</div></div><div class="drow"><div class="dl">Description</div><div class="dv">'+esc(i.description)+'</div></div><div class="drow"><div class="dl">Action taken</div><div class="dv">'+esc(i.immediateAction)+'</div></div><div class="drow"><div class="dl">Notified</div><div class="dv">'+esc(i.notified||'—')+'</div></div>'+(i.reviewNote?'<div class="drow"><div class="dl">Review note</div><div class="dv">'+esc(i.reviewNote)+'</div></div>':'');
+  let footer='<button class="btn btn-s" type="button" data-action="sheet-cancel">Close</button>';
+  if(i.reviewStatus==='Pending Review')footer+='<button class="btn btn-p" type="button" data-action="set-incident-status" data-id="'+i.id+'" data-status="Under Review">Under Review</button>';
+  if(i.reviewStatus!=='Closed')footer+='</div><div class="sf" style="border-top:none;padding-top:0"><button class="btn btn-p btn-block" type="button" data-action="set-incident-status" data-id="'+i.id+'" data-status="Closed">Mark Closed</button>';
+  else footer+='<button class="btn btn-s" type="button" data-action="set-incident-status" data-id="'+i.id+'" data-status="Under Review">Reopen</button>';
+  openSheet('Incident Detail',body,footer);
+}
+function showHandoverForm(preResident){
+  const resOpts=store.residents.map(r=>'<option value="'+r.id+'"'+(preResident===r.id?' selected':'')+'>'+esc(r.label)+'</option>').join('');
+  const body='<form id="ho-form"><div class="fg"><label class="fl">Resident<span class="req">*</span></label><select class="fs" name="residentId" required>'+resOpts+'</select></div><div class="fg"><label class="fl">Priority<span class="req">*</span></label><select class="fs" name="priority"><option>Routine</option><option>Observe</option><option>Action Required</option></select></div><div class="fg"><label class="fl">Message<span class="req">*</span></label><textarea class="ft" name="message" required placeholder="Handover message…"></textarea></div><div class="fg"><label class="fl">Author</label><select class="fs" name="authorId">'+STAFF.map(s=>'<option value="'+s.id+'"'+(s.id===store.currentUserId?' selected':'')+'>'+s.name+'</option>').join('')+'</select></div></form>';
+  openSheet('Add Handover Item',body,'<button class="btn btn-s" type="button" data-action="sheet-cancel">Cancel</button><button class="btn btn-p" type="button" id="ho-save">Add Item</button>');
+  document.getElementById('ho-save').onclick=()=>{const form=document.getElementById('ho-form');if(!form.reportValidity())return;const fd=new FormData(form);const r=getResident(fd.get('residentId'));store.handovers.unshift({id:uid(),residentId:fd.get('residentId'),priority:fd.get('priority'),message:fd.get('message'),authorId:fd.get('authorId'),createdAt:Date.now(),resolved:false,resolvedBy:null,resolvedAt:null});addAudit(sn(fd.get('authorId'))+' added a handover item for '+r.label);toast('Handover item added','ok');closeSheet();persist();render();navigate('#/handover')};
+}
+function showDocumentForm(preResident){
+  const resOpts=store.residents.map(r=>'<option value="'+r.id+'"'+(preResident===r.id?' selected':'')+'>'+esc(r.label)+'</option>').join('');
+  const r=getResident(preResident)||store.residents[0];
+  const body='<form id="doc-form"><div class="fg"><label class="fl">Resident</label><select class="fs" name="residentId">'+resOpts+'</select></div><div class="fg"><label class="fl">Title<span class="req">*</span></label><input class="fc" name="title" value="Demo Document — '+esc(r.label)+'" required></div><div class="fg"><label class="fl">Category</label><select class="fs" name="category">'+['Care Plan','Assessment','Medication','Emergency','Discharge','Clinical','Other'].map(c=>'<option>'+c+'</option>').join('')+'</select></div><div class="fg"><label class="fl">Status</label><select class="fs" name="status"><option>Current</option><option>Review due</option><option>Draft</option><option>Expired</option></select></div></form>';
+  openSheet('Add Demo Document',body,'<button class="btn btn-s" type="button" data-action="sheet-cancel">Cancel</button><button class="btn btn-p" type="button" id="doc-save">Add Document</button>');
+  document.getElementById('doc-save').onclick=()=>{const form=document.getElementById('doc-form');if(!form.reportValidity())return;const fd=new FormData(form);const res=getResident(fd.get('residentId'));store.documents.unshift({id:uid(),residentId:fd.get('residentId'),title:fd.get('title'),category:fd.get('category'),uploadedBy:store.currentUserId,date:todayISO(),status:fd.get('status'),content:'FICTIONAL DEMO DOCUMENT\n\n'+fd.get('title')+'\n\nPlaceholder content for demonstration purposes only.\nResident: '+res.label+'\nUploaded by: '+sn(store.currentUserId)+'\nDate: '+fmtDate(todayISO())+'\n\nThis is not a real clinical document.'});addAudit(sn(store.currentUserId)+' added a demo document for '+res.label);toast('Demo document added','ok');closeSheet();persist();render();navigate('#/residents/'+res.id+'?tab=documents')};
+}
+function showDocumentDetail(id){
+  const d=store.documents.find(x=>x.id===id);if(!d)return;const r=getResident(d.residentId);
+  openSheet('Document','<div class="drow"><div class="dl">Title</div><div class="dv">'+esc(d.title)+'</div></div><div class="drow"><div class="dl">Resident</div><div class="dv">'+esc(r.label)+'</div></div><div class="drow"><div class="dl">Category</div><div class="dv">'+esc(d.category)+'</div></div><div class="drow"><div class="dl">Status</div><div class="dv">'+badge(d.status)+'</div></div><div class="drow"><div class="dl">Uploaded by</div><div class="dv">'+sn(d.uploadedBy)+'</div></div><div class="drow"><div class="dl">Date</div><div class="dv">'+fmtDate(d.date)+'</div></div><div class="docph">'+esc(d.content).replace(/\n/g,'<br>')+'</div>','<button class="btn btn-s btn-block" type="button" data-action="sheet-cancel">Close</button>');
+}
+
+function showCloseIncidentSheet(i){
+  const r=getResident(i.residentId);
+  const body='<p class="sm muted mb-3">Closing incident for '+esc(r.label)+': '+esc(i.type)+'</p><div class="fg"><label class="fl">Review note (optional)</label><textarea class="ft" id="close-inc-note" placeholder="Review note…">'+esc(i.reviewNote||'Reviewed and closed (demo).')+'</textarea></div>';
+  openSheet('Close Incident',body,'<button class="btn btn-s" type="button" data-action="sheet-cancel">Cancel</button><button class="btn btn-p" type="button" id="close-inc-confirm">Confirm Close</button>');
+  document.getElementById('close-inc-confirm').onclick=()=>{
+    i.reviewNote=(document.getElementById('close-inc-note').value||'').trim();
+    i.reviewStatus='Closed';
+    i.reviewedBy=store.currentUserId;
+    i.reviewedAt=Date.now();
+    addAudit(sn(store.currentUserId)+' reviewed an incident for '+r.label+' — Closed');
+    toast('Incident status: Closed','ok');
+    closeSheet();persist();render();
+  };
+}
+
+function handleAction(action,el){
+  const id=el.getAttribute('data-id'),resident=el.getAttribute('data-resident');
+  switch(action){
+    case 'cf-shift':{
+      const seg=document.getElementById('cf-shift-seg');
+      if(seg){seg.querySelectorAll('button').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('cf-shift').value=el.getAttribute('data-shift');
+      const sg=document.getElementById('cf-sleep-group');if(sg){sg.style.outline=el.getAttribute('data-shift')==='Night'?'2px solid var(--accent-soft)':'none';sg.style.borderRadius='6px';sg.style.padding=el.getAttribute('data-shift')==='Night'?'8px':'0'}}
+      break}
+    case 'cf-changes':{
+      const seg=document.getElementById('cf-changes-seg');
+      if(seg){seg.querySelectorAll('button').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('cf-changes').value=el.getAttribute('data-val');document.getElementById('cf-changes-detail-wrap').classList.toggle('hidden',el.getAttribute('data-val')!=='Yes')}
+      break}
+    case 'sheet-cancel':closeSheet();break;
+    case 'open-more':navigate('#/more');break;
+    case 'reset-demo':confirmDialog('Reset all demo data to the original seed? Unsaved demo changes will be lost.',()=>{resetStore();toast('Demo data restored','ok');navigate('#/dashboard')});break;
+    case 'add-appointment':closeSheet();showAppointmentForm(null,resident);break;
+    case 'edit-appointment':{const a=store.appointments.find(x=>x.id===id);closeSheet();showAppointmentForm(a);break}
+    case 'view-appointment':showAppointmentDetail(id);break;
+    case 'complete-appointment':{const a=store.appointments.find(x=>x.id===id);if(a){a.status='Completed';addAudit(sn(store.currentUserId)+' marked an appointment completed for '+getResident(a.residentId).label);toast('Appointment marked completed','ok');closeSheet();persist();render()}break}
+    case 'cancel-appointment':{const a=store.appointments.find(x=>x.id===id);if(a){a.status='Cancelled';addAudit(sn(store.currentUserId)+' cancelled an appointment for '+getResident(a.residentId).label);toast('Appointment cancelled','ok');closeSheet();persist();render()}break}
+    case 'reschedule-appointment':{const a=store.appointments.find(x=>x.id===id);if(a){a.status='Scheduled';addAudit(sn(store.currentUserId)+' rescheduled an appointment for '+getResident(a.residentId).label);toast('Appointment set to Scheduled','ok');closeSheet();persist();render()}break}
+    case 'report-incident':closeSheet();showIncidentForm(resident);break;
+    case 'view-incident':showIncidentDetail(id);break;
+    case 'set-incident-status':{const i=store.incidents.find(x=>x.id===id);const status=el.getAttribute('data-status');if(!i)break;if(status==='Closed'){showCloseIncidentSheet(i);break}i.reviewStatus=status;i.reviewedBy=store.currentUserId;i.reviewedAt=Date.now();addAudit(sn(store.currentUserId)+' reviewed an incident for '+getResident(i.residentId).label+' — '+status);toast('Incident status: '+status,'ok');closeSheet();persist();render();break}
+    case 'add-handover':closeSheet();showHandoverForm(resident);break;
+    case 'resolve-handover':{const h=store.handovers.find(x=>x.id===id);if(h){h.resolved=true;h.resolvedBy=store.currentUserId;h.resolvedAt=Date.now();addAudit(sn(store.currentUserId)+' marked a handover item resolved for '+getResident(h.residentId).label);toast('Handover item resolved','ok');persist();render()}break}
+    case 'reopen-handover':{const h=store.handovers.find(x=>x.id===id);if(h){h.resolved=false;h.resolvedBy=null;h.resolvedAt=null;addAudit(sn(store.currentUserId)+' reopened a handover item for '+getResident(h.residentId).label);toast('Handover item reopened','ok');persist();render()}break}
+    case 'add-document':closeSheet();showDocumentForm(resident);break;
+    case 'view-document':showDocumentDetail(id);break;
+    case 'resolve-followup':{const n=store.careNotes.find(x=>x.id===id);if(n){n.followUpResolved=true;addAudit(sn(store.currentUserId)+' resolved a follow-up for '+getResident(n.residentId).label);toast('Follow-up resolved','ok');persist();render()}break}
+  }
+}
+function submitCareNote(form){
+  form.querySelectorAll('.ferr').forEach(el=>{el.classList.add('hidden');el.textContent=''});
+  const fd=new FormData(form),shift=document.getElementById('cf-shift').value,errors={};
+  if(!fd.get('residentId'))errors.residentId='Select a resident';
+  if(!shift)errors.shift='Select a shift';
+  if(!fd.get('meals'))errors.meals='Required';
+  if(!fd.get('fluid'))errors.fluid='Required';
+  if(!fd.get('toileting'))errors.toileting='Required';
+  if(!fd.get('bathing'))errors.bathing='Required';
+  if(!fd.get('mobility'))errors.mobility='Required';
+  if(!fd.get('mood'))errors.mood='Required';
+  if(!(fd.get('narrative')||'').trim())errors.narrative='Narrative notes are required';
+  if(Object.keys(errors).length){Object.keys(errors).forEach(k=>{const el=form.querySelector('[data-err="'+k+'"]');if(el){el.textContent=errors[k];el.classList.remove('hidden')}});toast('Please complete required fields','warn');return}
+  const r=getResident(fd.get('residentId'));
+  const note={id:uid(),residentId:fd.get('residentId'),caregiverId:fd.get('caregiverId'),shift,date:todayISO(),meals:fd.get('meals'),fluid:fd.get('fluid'),toileting:fd.get('toileting'),bathing:fd.get('bathing'),mobility:fd.get('mobility'),activities:fd.get('activities')||'',mood:fd.get('mood'),sleep:fd.get('sleep')||'',changesBaseline:document.getElementById('cf-changes').value,changesDetail:fd.get('changesDetail')||'',followUpRequired:document.getElementById('cf-fu').checked,followUpDetail:fd.get('followUpDetail')||'',followUpDue:fd.get('followUpDue')||'',followUpResolved:false,narrative:fd.get('narrative'),createdAt:Date.now(),authorId:fd.get('caregiverId')};
+  store.careNotes.unshift(note);
+  addAudit(sn(note.authorId)+' documented care for '+r.label+' ('+shift+')');
+  if(note.followUpRequired)addAudit(sn(note.authorId)+' created a follow-up for '+r.label);
+  persist();
+  form.classList.add('hidden');
+  const confirm=document.getElementById('care-confirm');
+  confirm.classList.remove('hidden');
+  confirm.innerHTML='<div class="confirm"><h3>Care note saved</h3><p>Documentation for '+esc(r.label)+' · '+esc(shift)+' has been recorded'+(note.followUpRequired?' with a follow-up alert':'')+'.</p><div class="links"><button class="btn btn-p btn-sm" type="button" data-nav="#/residents/'+r.id+'?tab=notes">View in '+esc(r.label)+'\'s Daily Notes</button><button class="btn btn-s btn-sm" type="button" data-nav="#/dashboard">Back to Dashboard</button><button class="btn btn-g btn-sm" type="button" data-nav="#/document-care">Document another</button></div></div>';
+  toast('Care note submitted','ok');
+  renderSidebar(parseHash());renderBottomNav(parseHash());
+}
+function bindCareFormExtras(){
+  const seg=document.getElementById('cf-shift-seg');
+  if(seg)seg.querySelectorAll('button').forEach(btn=>{btn.onclick=()=>{seg.querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('cf-shift').value=btn.getAttribute('data-shift');const sg=document.getElementById('cf-sleep-group');if(sg){sg.style.outline=btn.getAttribute('data-shift')==='Night'?'2px solid var(--accent-soft)':'none';sg.style.borderRadius='6px';sg.style.padding=btn.getAttribute('data-shift')==='Night'?'8px':'0'}}});
+  const chSeg=document.getElementById('cf-changes-seg');
+  if(chSeg)chSeg.querySelectorAll('button').forEach(btn=>{btn.onclick=()=>{chSeg.querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('cf-changes').value=btn.getAttribute('data-val');document.getElementById('cf-changes-detail-wrap').classList.toggle('hidden',btn.getAttribute('data-val')!=='Yes')}});
+}
+function bindGlobalEvents(){
+  document.getElementById('sheet-close').onclick=()=>closeSheet();
+  document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeSheet()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('overlay').classList.contains('open'))closeSheet()});
+  document.body.addEventListener('click',e=>{
+    const t=e.target.closest('[data-nav]');
+    if(t){e.preventDefault();closeSheet();navigate(t.getAttribute('data-nav'));return}
+    const actionEl=e.target.closest('[data-action]');
+    if(actionEl)handleAction(actionEl.getAttribute('data-action'),actionEl);
+  });
+  document.body.addEventListener('change',e=>{
+    if(e.target.id==='user-select'){store.currentUserId=e.target.value;persist();toast('Viewing as '+sn(store.currentUserId));render()}
+    if(e.target.id==='cf-fu')document.getElementById('cf-fu-wrap').classList.toggle('hidden',!e.target.checked);
+  });
+  document.body.addEventListener('input',e=>{
+    if(e.target.id==='resident-search'){clearTimeout(window._searchT);window._searchT=setTimeout(()=>{const q=e.target.value;const route=parseHash();if(route.parts[0]==='residents'&&!route.parts[1]){history.replaceState(null,'','#/residents'+(q?'?q='+encodeURIComponent(q):''));document.getElementById('content').innerHTML=viewResidents(parseHash())}},150)}
+  });
+  document.body.addEventListener('submit',e=>{if(e.target.id==='care-form'){e.preventDefault();submitCareNote(e.target)}});
+}
+function render(){
+  const route=parseHash();
+  renderSidebar(route);renderBottomNav(route);renderTopbar(route);
+  const page=route.parts[0]||'dashboard';
+  let html='';
+  if(page==='dashboard'||page==='')html=viewDashboard();
+  else if(page==='residents'&&route.parts[1])html=viewResidentDetail(route);
+  else if(page==='residents')html=viewResidents(route);
+  else if(page==='document-care')html=viewDocumentCare(route);
+  else if(page==='appointments')html=viewAppointments(route);
+  else if(page==='handover')html=viewHandover();
+  else if(page==='incidents')html=viewIncidents(route);
+  else if(page==='management')html=viewManagement(route);
+  else if(page==='more')html=viewMore();
+  else html=viewDashboard();
+  document.getElementById('content').innerHTML=html;
+  if(page==='document-care')bindCareFormExtras();
+  if(page==='appointments'&&route.params.id){const a=store.appointments.find(x=>x.id===route.params.id);if(a)setTimeout(()=>showAppointmentDetail(a.id),100)}
+  if(page==='incidents'&&route.params.id){const i=store.incidents.find(x=>x.id===route.params.id);if(i)setTimeout(()=>showIncidentDetail(i.id),100)}
+}
+loadStore();
+bindGlobalEvents();
+window.addEventListener('hashchange',()=>render());
+if(!location.hash)location.hash='#/dashboard';
+else render();
+})();
+
+</script>
+</body>
+</html>
